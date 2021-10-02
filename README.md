@@ -181,7 +181,7 @@ res.send(course);
 
 })
 
-### Handling HTTP DELETE
+#### Handling HTTP DELETE
 
 app.delete('/api/courses/:id', (req, res) => {
 
