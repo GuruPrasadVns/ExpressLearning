@@ -1,217 +1,198 @@
-# ExpressLearning
+## ExpressLearning
 
-## This repository can be used to learn basics of Express.
+### This repository can be used to learn basics of Express.
 
-## Building RESTful API using Express
+### Building RESTful API using Express
 
-### Express is fast and light weight framework for building web applications.
+#### Express is fast and light weight framework for building web applications.
 
-### RESTful Services or RESTFul API
+#### RESTful Services or RESTFul API
 
 #### REST == Representational State Transfer. REST is basically a convention to build these services.
 
 #### CRUD == Create, Read, Update and Delete
 
-#### vidly app : http://vidly.com/api/customers : this api we will build, customer is called as resource or endpoint in REST teerm.
+#### vidly app : http://vidly.com/api/customers : this api we will build, customer is called as resource or endpoint in REST term.
 
 #### HTTP methods : GET, POST, PUT, DELETE
 
 ##### To get the list of all customers: GET /api/customers : [{id: '1',name:''},{id: '2',name:''},....]
 
-#### To get the single customer : GET /api/customers/1 : {id: '1',name:''}
+##### To get the single customer : GET /api/customers/1 : {id: '1',name:''}
 
-#### To update any customer data : PUT /api/customers/1 and also includes customer data in the body of the request : {id: '1',name:''}
+##### To update any customer data : PUT /api/customers/1 and also includes customer data in the body of the request : {id: '1',name:''}
 
-#### To delete a customer : DELETE /api/customers/1 : {id: '1',name:''}
+##### To delete a customer : DELETE /api/customers/1 : {id: '1',name:''}
 
-#### To create a customer : POST /api/customer and should include new customer data in the body of the request. : {id: '',name}
+##### To create a customer : POST /api/customer and should include new customer data in the body of the request. : {id: '',name}
 
-# Introducing Express
+## Introducing Express
 
-### create package.json using npm i --yes inside ExpressBasics Folder
+#### create package.json using npm i --yes inside ExpressBasics Folder
 
-### install express using npm i express
+#### install express using npm i express
 
-## Building Your First Web Server
+### Building Your First Web Server
 
-#### const express = require('express');
+const express = require('express');
 
-#### const app = express();
+const app = express();
+app.get('/', (req, res) => {
+res.send('Root Url');
+});
 
-#### app.get('/', (req, res) => {
+app.get('/api/courses', (req, res) => {
+res.send(JSON.stringify(["Java", "Spring", "Hibernate"]));
+})
 
-#### res.send('Root Url');
+app.listen(3000, () => console.log('Listening to the port 3000....'))
 
-#### });
+### Nodemon : Short form of Node Monitor
 
-#### app.get('/api/courses', (req, res) => {
+##### npm i -g nodemon
 
-#### res.send(JSON.stringify(["Java", "Spring", "Hibernate"]));
+### Environment Variables
 
-#### })
+#### We have hard coded the port number in our application. When we deploy our application is production enviornment the port is assigned by the production system. To fix this issue we need to use the environment variable.
 
-#### app.listen(3000, () => console.log('Listening to the port 3000....'))
+const port = process.env.PORT || 3000;
 
-## Nodemon : Short form of Node Monitor
-
-#### npm i -g nodemon
-
-## Environment Variables
-
-### We have hard coded the port number in our application. When we deploy our application is production enviornment the port is assigned by the production system. To fix this issue we need to use the environment variable.
-
-#### const port = process.env.PORT || 3000;
-
-#### app.listen(port, ()=>console.log(`Listening on Port ${port}`));
+app.listen(port, ()=>console.log(`Listening on Port ${port}`));
 
 #### How to set env variable in windows using command prompt ?
 
-## Route Parameters
+$env:port=3000
 
-#### app.get('/api/courses/:courseId', (req, res) => {
+### Route Parameters
 
-#### res.send(req.params.courseId);
+app.get('/api/courses/:courseId', (req, res) => {
 
-#### });
+res.send(req.params.courseId);
 
-#### app.get('/api/posts/:year/:month', (req, res) => {
+});
 
-#### res.send(req.params);
+app.get('/api/posts/:year/:month', (req, res) => {
 
-#### });
+res.send(req.params);
 
-## Query Parameters
+});
 
-### Query parameters is used to provide optional parameter to the server like sorting and filtering information.
+### Query Parameters
 
-#### app.get('/api/comments/:year/:month', (req, res) => {
+#### Query parameters is used to provide optional parameter to the server like sorting and filtering information.
 
-#### res.send(req.query);
+app.get('/api/comments/:year/:month', (req, res) => {
 
-#### });
+res.send(req.query);
+
+});
 
 #### url : http://localhost:3000/api/comments/2021/Aug?sortBy=name
 
-## Handling HTTP GET request
+### Handling HTTP GET request
 
 #### refer courses.js file
 
-## Handling HTTP POST request
+### Handling HTTP POST request
 
-### For handling post request we need to enable parsing of JSON object in the body of the request. So, we need to use app.use(express.json()). This syntax is used to add a piece of middleware . express.json() will return a piece of middleware and app.use method is used to use this middleware in request processing pipeline.
+#### For handling post request we need to enable parsing of JSON object in the body of the request. So, we need to use app.use(express.json()). This syntax is used to add a piece of middleware . express.json() will return a piece of middleware and app.use method is used to use this middleware in request processing pipeline.
 
 #### POST request without validation : It assumes that request body has the name property
 
-###### app.post('/api/courses', (req, res) => {
+app.post('/api/courses', (req, res) => {
 
-###### const course = {
+const course = {
 
-###### id: courses.length + 1,
+id: courses.length + 1,
 
-###### name: req.body.name
+name: req.body.name
 
-###### }
+ }
 
-###### courses.push(course);
+courses.push(course);
 
-###### res.send(course);
+res.send(course);
 
-###### })
+})
 
-## Input Validation
+### Input Validation
 
-### Basic input validation can be performed programmatically as given in the below example :
+#### Basic input validation can be performed programmatically as given in the below example :
 
-#### app.post('/api/courses', (req, res) => {
+app.post('/api/courses', (req, res) => {
 
-#### if (!req.body.name || req.body.name.length < 3)
+if (!req.body.name || req.body.name.length < 3)
 
-#### return res.status(400).send('Name is required and it should be more than 3 characters');
+return res.status(400).send('Name is required and it should be more than 3 characters');
 
-####
+const course = {
 
-#### const course = {
+id: courses.length + 1,
 
-#### id: courses.length + 1,
+name: req.body.name
 
-#### name: req.body.name
+}
 
-#### }
+courses.push(course);
 
-#### courses.push(course);
+res.send(course);
 
-#### res.send(course);
+ })
 
-#### })
+#### You can use joi npm library for input validation. npm i joi
 
-### You can use joi npm library for input validation. npm i joi
+app.post('/api/courses', (req, res) => {
 
-#### app.post('/api/courses', (req, res) => {
+const schema = Joi.object({
 
-#### const schema = Joi.object({
+name: Joi.string().min(3).max(30).required()
 
-#### name: Joi.string().min(3).max(30).required()
+});
 
-#### });
+const result = schema.validate({ name: req.body.name });
 
-#### const result = schema.validate({ name: req.body.name });
+if (result.error)
 
-#### //console.log(result);
+return res.status(400).send(result.error.deatails[0].message);
+...remaining code.....
+})
 
-#### if (result.error)
+#### Handling HTTP PUT request
 
-#### return res.status(400).send(result.error.message);
+app.put('/api/courses/:id', (req, res) => {
 
-#### const course = {
+const course = courses.find(c => c.id === parseInt(req.params.id));
 
-#### id: courses.length + 1,
+if (!course) return res.status(404).send(`Course with given id ${req.params.id} not found`);
 
-#### name: req.body.name
+const schema = Joi.object({
 
-#### }
+name: Joi.string().min(3).max(30).required()
 
-#### courses.push(course);
+});
 
-#### res.send(course);
+const result = schema.validate({ name: req.body.name })
 
-#### })
+if (result.error) return res.status(400).send(result.error.details[0].message);
 
-## Handling HTTP PUT request
+course.name = req.body.name;
 
-#### app.put('/api/courses/:id', (req, res) => {
+res.send(course);
 
-#### const course = courses.find(c => c.id === parseInt(req.params.id));
+})
 
-#### if (!course) return res.status(404).send(`Course with given id ${req.params.id} not found`);
+### Handling HTTP DELETE
 
-#### const schema = Joi.object({
+app.delete('/api/courses/:id', (req, res) => {
 
-#### name: Joi.string().min(3).max(30).required()
+const course = courses.find(c => c.id === parseInt(req.params.id));
 
-#### });
+if (!course) return res.status(404).send(`Course with given id ${req.params.id} not found`);
 
-#### const result = schema.validate({ name: req.body.name })
+const index = courses.indexOf(course);
 
-#### if (result.error) return res.status(400).send(result.error.details[0].message);
+courses.splice(index, 1);
 
-#### course.name = req.body.name;
+res.send(course);
 
-#### res.send(course);
-
-#### })
-
-## Handling HTTP DELETE
-
-#### app.delete('/api/courses/:id', (req, res) => {
-
-#### const course = courses.find(c => c.id === parseInt(req.params.id));
-
-#### if (!course) return res.status(404).send(`Course with given id ${req.params.id} not found`);
-
-#### const index = courses.indexOf(course);
-
-#### courses.splice(index, 1);
-
-#### res.send(course);
-
-#### })
+ })
